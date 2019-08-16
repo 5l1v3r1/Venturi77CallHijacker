@@ -21,7 +21,7 @@ namespace Venturi77Hijacker {
     class Program {
         static void Main(string[] args) {
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("[1] Inject Dll\n[2] Build Config\n[3] Build Debug Config");
+            Console.WriteLine("[1] Inject Dll\n[2] Build Config\n[3] Build Debug Config\n[4] Parse #Koi Header");
             var key = Console.ReadKey();
             Console.Clear();
             if(key.Key == ConsoleKey.D1 || key.Key == ConsoleKey.NumPad1) {
@@ -36,6 +36,54 @@ namespace Venturi77Hijacker {
                 CreateDebugConfig();
                 return;
             }
+            if (key.Key == ConsoleKey.D4 || key.Key == ConsoleKey.NumPad4) {
+                ParseKoiHeader();
+                return;
+            }
+        }
+        public static void ParseKoiHeader() {
+            Console.WriteLine("Path: ");
+            string Path = Console.ReadLine().Replace("\"", "");
+            Console.Clear();
+            var data = KoiHeader.Parse(Path);
+            if(data != null) {
+                Console.WriteLine("Strings Found: ");
+                Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.White;
+                foreach (KeyValuePair<uint, string> keyValuePair in data.strings) {
+                    try {
+                        Console.WriteLine("[+] " + keyValuePair.Key + "|" + keyValuePair.Value);
+                    } catch {
+                    }
+                }
+                Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine("References Found: ");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine();
+                foreach (KeyValuePair<uint, KoiShit.VMData.RefInfo> keyValuePair2 in data.references) {
+                    try {
+                        Console.WriteLine("[+] " + keyValuePair2.Key + "|" + keyValuePair2.Value.Member.ToString());
+                    } catch {
+                    }
+                }
+                Console.WriteLine();
+             /*   Console.WriteLine("Exports Found: ");
+                foreach (var str in data.exports) {
+                    WriteLine(str.Value.CodeOffset);
+                }
+                Console.WriteLine();*/
+            } else {
+                Console.WriteLine("Found nothing :(");
+            }
+            Console.ReadLine();
+        }
+        public static void WriteLine(string ToWrite) {
+            Console.ForegroundColor = ConsoleColor.White;
+            try {
+                Console.WriteLine("[+] " +ToWrite);
+            } catch { }
+            Console.ForegroundColor = ConsoleColor.Cyan;
         }
         public static void InjectDll() {
             Obfuscator obf = Obfuscator.Unknown;
