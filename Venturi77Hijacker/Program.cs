@@ -15,6 +15,8 @@ using dnlib.DotNet.MD;
 using dnlib.DotNet.Writer;
 using Newtonsoft.Json;
 using Venturi77CallHijacker;
+using System.Threading;
+
 namespace Venturi77Hijacker {
     class Program {
         static void Main(string[] args) {
@@ -81,6 +83,13 @@ namespace Venturi77Hijacker {
                 Console.WriteLine("Some Issues With Agile Will Fix In A Bit!");
                 Console.ReadLine();
                 return;
+            }
+            if(obf == Obfuscator.KoiVMDll) {
+                if (InjectKoiVM(ModuleDefMD.Load(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Path), "KoiVM.Runtime.dll")), System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Path), "KoiVM.Runtime.dll"))) {
+                    Console.WriteLine("Successfully Injected KoiVM");
+                } else {
+                    Console.WriteLine("Failed Injecting KoiVM");
+                }
             }
             if(obf == Obfuscator.Unknown) {
                 Console.WriteLine("Unknown Obfuscator!");
@@ -322,7 +331,16 @@ namespace Venturi77Hijacker {
             nativeModuleWriterOptions.Cor20HeaderOptions.Flags = new ComImageFlags?(ComImageFlags.ILOnly);
             var otherstrteams = Module.Metadata.AllStreams.Where(a => a.GetType() == typeof(DotNetStream));
             nativeModuleWriterOptions.MetadataOptions.PreserveHeapOrder(Module, addCustomHeaps: true);
-            Module.Write(Path.Combine(Path.GetDirectoryName(Pathh),Path.GetFileNameWithoutExtension(Pathh) + "_Injected" + ".exe"), nativeModuleWriterOptions);
+            if(Pathh.ToString().ToUpper().Contains(".DLL")) {
+                Thread.Sleep(1000);
+                Module.Write(Path.Combine(Path.GetDirectoryName(Pathh), Path.GetFileNameWithoutExtension(Pathh) + "_Inj" + ".dll"), nativeModuleWriterOptions);
+
+            } else {
+               
+                Module.Write(Path.Combine(Path.GetDirectoryName(Pathh), Path.GetFileNameWithoutExtension(Pathh) + "_Injected" + ".exe"), nativeModuleWriterOptions);
+
+
+            }
             File.Copy("Venturi77CallHijacker.dll", Path.GetDirectoryName(Pathh) + "\\Venturi77CallHijacker.dll");
             File.Copy("Newtonsoft.Json.dll", Path.GetDirectoryName(Pathh)+ "\\Newtonsoft.Json.dll");
             return injected;
@@ -334,7 +352,11 @@ namespace Venturi77Hijacker {
             if(Module.Types.SingleOrDefault(t => t.HasFields && t.Fields.Count == 119) != null) {
                 return Obfuscator.KoiVM;
             }
-            foreach(var type in Module.Types) {
+            if (Module.GetAssemblyRefs().Where(q => q.ToString().Contains("KoiVM.Runtime")).ToArray().Count() > 0) {
+                return Obfuscator.KoiVMDll;
+            }
+
+            foreach (var type in Module.Types) {
                 foreach(var method in type.Methods) {
                     if(method.HasBody && method.Body.HasInstructions&& method.Body.Instructions.Count() >= 6) {
                        if(method.Body.Instructions[0].OpCode == OpCodes.Ldarg_0) {

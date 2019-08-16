@@ -9,6 +9,7 @@ namespace Venturi77Hijacker {
         KoiVM,
         EazVM,
         AgileVM,
+        KoiVMDll,
         Unknown
     }
 }
