@@ -355,10 +355,10 @@ namespace Venturi77Hijacker {
             foreach (var type in Module.Types) {
                 foreach(var method in type.Methods) {
                     if(method.HasBody && method.Body.HasInstructions&& method.Body.Instructions.Count() >= 6) {
-                       if(method.Body.Instructions[0].OpCode == OpCodes.Ldarg_0) {
-                            if(method.Body.Instructions[1].OpCode == OpCodes.Ldarg_1) {
-                                if (method.Body.Instructions[2].OpCode == OpCodes.Ldarg_2) {
-                                    if (method.Body.Instructions[3].OpCode == OpCodes.Ldarg_3) {
+                       if(method.Body.Instructions[0].IsLdarg()) {
+                            if(method.Body.Instructions[1].IsLdarg()) {
+                                if (method.Body.Instructions[2].IsLdarg()) {
+                                    if (method.Body.Instructions[3].IsLdarg()) {
                                         if (method.Body.Instructions[5].OpCode == OpCodes.Pop) {
                                             if (method.Body.Instructions[6].OpCode == OpCodes.Ret) {
                                                 if (method.Body.Instructions[4].OpCode == OpCodes.Call) {
