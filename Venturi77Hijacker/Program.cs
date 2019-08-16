@@ -216,6 +216,7 @@ namespace Venturi77Hijacker {
                             if(method.Body.Instructions[d].OpCode == OpCodes.Callvirt) {
                                 if (method.Body.Instructions[d].ToString().Contains("System.Reflection.MethodBase::Invoke(System.Object,System.Object[])") && method.Body.Instructions[d + 1].IsStloc() && method.Body.Instructions[d - 1].IsLdarg() && method.Body.Instructions[d - 3].IsLdarg()) {
                                     method.Body.Instructions[d].Operand = method.Module.Import(ModuleDefMD.Load("Venturi77CallHijacker.dll").Types.Single(t => t.IsPublic && t.Name == "Handler").Methods.Single(m => m.Name == "HandleInvoke"));
+                                    method.Body.Instructions[d].OpCode = OpCodes.Call;
                                     injected = true;
                                 }
                         }
@@ -254,21 +255,15 @@ namespace Venturi77Hijacker {
                     if (flag) {
                         for (int j = 0; j < method.Body.Instructions.Count - 1; j++) {
                             if (method.Body.Instructions[j].OpCode == OpCodes.Callvirt) {
-                               if(j<=4) {
-                                    continue;
-                                }
-                                if (method.Body.Instructions[j - 1].OpCode == OpCodes.Ldarg_3 || method.Body.Instructions[j - 1].OpCode == OpCodes.Ldarg_2) {
-                                    if (method.Body.Instructions[j - 2].OpCode == OpCodes.Ldarg_2 || method.Body.Instructions[j - 2].OpCode == OpCodes.Ldarg_1) {
-                                        if (method.Body.Instructions[j - 3].OpCode == OpCodes.Ldarg_1 || method.Body.Instructions[j - 3].OpCode == OpCodes.Ldarg_0) {
-                                            Importer importer = new Importer(Module);
-                                            IMethod Method;
-                                            Method = importer.Import(typeof(Venturi77CallHijacker.Handler).GetMethod("HandleInvoke"));
-                                            method.Body.Instructions[j].Operand = Module.Import(Method);
-                                            method.Body.Instructions[j].OpCode = OpCodes.Call;
-                                            injected = true;
-                                        }
-
-                                    }
+                                string operand = method.Body.Instructions[j].Operand.ToString();
+                                if (operand.Contains("System.Object System.Reflection.MethodBase::Invoke(System.Object,System.Object[])") && method.Body.Instructions[j - 1].IsLdarg() && method.Body.Instructions[j - 2].IsLdarg() && method.Body.Instructions[j - 3].IsLdarg()) {
+                                    Importer importer = new Importer(Module);
+                                    IMethod myMethod;
+                                    myMethod = importer.Import(typeof(Venturi77CallHijacker.Handler).GetMethod("HandleInvoke"));
+                                    method.Body.Instructions[j].Operand = Module.Import(myMethod);
+                                    method.Body.Instructions[j].OpCode = OpCodes.Call;
+                                    injected = true;
+                                 
                                 }
                             }
                         }
@@ -309,6 +304,7 @@ namespace Venturi77Hijacker {
                                                 IMethod Method;
                                                 Method = importer.Import(typeof(Venturi77CallHijacker.Handler).GetMethod("HandleInvoke"));
                                                 method.Body.Instructions[j+3].Operand = Module.Import(Method);
+                                                method.Body.Instructions[j + 3].OpCode = OpCodes.Call;
                                                 injected = true;
                                             }
                                         }
