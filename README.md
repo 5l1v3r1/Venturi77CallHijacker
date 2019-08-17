@@ -10,6 +10,16 @@ XSilent007 - https://github.com/XSilent007/
 Latest update was pushed to support parameter manipulation.
 Example: https://i.imgur.com/ganYBMV.png
 
+#Latest Update
+
+Config system was updated to support parameter manipulation.
+
+Example: https://i.imgur.com/ganYBMV.png
+
+Took off the ContinueAdvanced from the config but will re-add it
+
+in a few hours. For now use search by MDToken, if you used ContinueAdvanced.
+
 # How To Use
 Run the venturi call hijacker exe and create a debug config.
 
