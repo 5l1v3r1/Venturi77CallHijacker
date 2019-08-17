@@ -18,31 +18,9 @@ Took off the ContinueAdvanced from the config but will re-add it
 in a few hours. For now use search by MDToken, if you used ContinueAdvanced.
 
 # How To Use
-Run the venturi call hijacker exe and create a debug config.
 
-A Config should be saved on Config.Json of the directory executed.
+https://github.com/TobitoFatitoNulled/Venturi77CallHijacker/wiki/Patching-KoiVM-CrackME
 
-Run call hijacker again and inject the dll, automatic detection works perfectly.
-
-Now after you have injected the dll you can run the .exe that you injected it into and
-
-it should leave a debug.txt that contains the information of the calls that were handled
-
-Ex: https://i.imgur.com/Ekomjuc.png
-
-Now you can just create a new config and according to the debug txt you can
-
-make it patch the calls. 
-
-Example of method that needs Patching:
-
-https://i.imgur.com/goFjTTm.png
-
-Example of config made for the method:
-
-https://i.imgur.com/LO9rwki.png (NEW CONFIG SYSTEM)
-
-Care: You need to have the config.json on the same directory that the .exe is.
 # Bugs:
 
 Agile,Eaz injection is buggy some files wont inject, will fix really soon.
