@@ -6,6 +6,9 @@ Team Venturi77 Members (Current):
 TobitoFatito - https://github.com/TobitoFatitoNulled/
 
 XSilent007 - https://github.com/XSilent007/
+#Latest Fixes
+Latest update was pushed to support parameter manipulation.
+Example: https://i.imgur.com/ganYBMV.png
 
 # How To Use
 Run the venturi call hijacker exe and create a debug config.
