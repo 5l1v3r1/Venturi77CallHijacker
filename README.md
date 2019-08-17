@@ -30,7 +30,7 @@ https://i.imgur.com/goFjTTm.png
 
 Example of config made for the method:
 
-https://i.imgur.com/1Qd1nHH.png
+https://i.imgur.com/LO9rwki.png (NEW CONFIG SYSTEM)
 
 Care: You need to have the config.json on the same directory that the .exe is.
 # Bugs:
