@@ -16,6 +16,7 @@ using dnlib.DotNet.Writer;
 using Newtonsoft.Json;
 using Venturi77CallHijacker;
 using System.Threading;
+using static Venturi77Hijacker.CallHijacker;
 
 namespace Venturi77Hijacker {
     class Program {
@@ -166,84 +167,124 @@ namespace Venturi77Hijacker {
             }));
 
         }
-            public static void CreateConfig() {
+        public static void CreateConfig() {
             CallHijacker.Config Config = new CallHijacker.Config();
             Config.Debug = false;
-            Config.Functions = new List<CallHijacker.Function>();
+            Config.Functions = new CallHijacker.Function();
+            Config.Functions.MDToken = new List<CallHijacker.MDToken>();
+            Config.Functions.Methods = new List<Method>();
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.White;
-            for (; ; )
-       {
-                if (WriteShit() == 1) {
-                    Config.Functions.Add(CreateFunction());
-                    continue;
-                }
-
-
-
-                File.AppendAllText("Config.Json", JsonConvert.SerializeObject(Config, Formatting.Indented, new JsonSerializerSettings {
-                    NullValueHandling = NullValueHandling.Ignore
-                }));
-
-            }
+            Config.Functions = CreateFunction(Config.Functions);
+            SaveConfig(Config);
+            Console.WriteLine("Saved!");
+            Console.ReadLine();
+            Console.Clear();
 
         }
-        public static CallHijacker.Function CreateFunction() {
-            CallHijacker.Function func = new CallHijacker.Function();
+        public static void SaveConfig(Config config) {
+            File.AppendAllText("Config.Json", JsonConvert.SerializeObject(config, Formatting.Indented, new JsonSerializerSettings {
+                NullValueHandling = NullValueHandling.Ignore
+            }));
+        }
+        public static CallHijacker.Parameter GenerateParam() {
+            CallHijacker.Parameter param = new CallHijacker.Parameter();
+            Console.WriteLine("Parameter Index:");
+            param.ParameterIndex = Convert.ToInt32(WriteInput());
+            Console.Clear();
+            Console.WriteLine("Replace Parameter Value With: (*null* if do nothing)");
+            string input2 = WriteInput();
+            param.ReplaceWith = ParseString(input2);
+            Console.Clear();
+            return param;
+        }
+        public static CallHijacker.Function CreateFunction(CallHijacker.Function func) {
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("Search By: " + Environment.NewLine);
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("[1] MethodName" + Environment.NewLine + "[2] Parameters" + Environment.NewLine + "[3] MDToken" + Environment.NewLine);
+            Console.WriteLine("[1] MethodName" + Environment.NewLine + "[2] MDToken" + Environment.NewLine);
             int parse3 = Convert.ToInt32(WriteInput());
-            Console.Clear();
-            if (parse3 == 1) {
-                func.SearchBy = "MethodName";
-            } else if (parse3 == 2) {
-                func.SearchBy = "Parameters";
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("Parameter: ");
-                func.Parameter = Convert.ToInt32(Console.ReadLine());
-                Console.ForegroundColor = ConsoleColor.Cyan;
+            if(parse3 == 1) {
+                Method method = new Method();
+                Console.WriteLine("Method Name:");
+                method.MethodName = WriteInput();
                 Console.Clear();
-            } else if (parse3 == 3) {
-                func.SearchBy = "MDToken";
+                Console.WriteLine("Replace Result With: (*null* if do nothing)");
+                method.ReplaceResultWith = ParseString(WriteInput());
+                Console.Clear();
+                Console.WriteLine("[1] Add Edit Parameter\n[2]Continue");
+                if (Convert.ToInt32(WriteInput()) == 1) {
+                    method.Param = new List<CallHijacker.Parameter>();
+                    for (; ; )
+                        {
+                        method.Param.Add(GenerateParam());
+                        Console.WriteLine("[1] Add Edit Parameter\n[2]Continue");
+                        if (Convert.ToInt32(WriteInput()) != 1)
+                            break;
+                    }
+                }
+                Console.Clear();
+                func.Methods.Add(method);
+                Console.WriteLine("[1] Continue\n[2] Save");
+                int parse2  = Convert.ToInt32(WriteInput());
+                if(parse2 == 1) {
+                    CreateFunction(func);
+                } else {
+                    return func;
+                }
+            } else {
+                if (parse3 == 3) {
+                   
+                   
+                } else {
+                    if (parse3 == 2) {
+                        CallHijacker.MDToken MDTok = new CallHijacker.MDToken();
+                        Console.WriteLine("MDToken:");
+                        MDTok.MDTokenInt = Convert.ToInt32(WriteInput());
+                        Console.Clear();
+                        Console.WriteLine("Replace Result With: (*null* if do nothing)");
+                        string input = WriteInput();
+                        MDTok.ReplaceResultWith = ParseString(input);
+                        Console.Clear();
+                        Console.WriteLine();
+                        Console.WriteLine("[1] Add Edit Parameter\n[2]Continue");
+                        if(Convert.ToInt32(WriteInput()) == 1) {
+                            MDTok.Param = new List<CallHijacker.Parameter>();
+                            for (; ; )
+                                {
+                                MDTok.Param.Add(GenerateParam());
+                                Console.WriteLine("[1] Add Edit Parameter\n[2] Continue");
+                                if (Convert.ToInt32(WriteInput()) != 1)
+                                    break;
+                            }
+                        }
+                        func.MDToken.Add(MDTok);
+                        Console.Clear();
+                        Console.WriteLine("[1] Continue\n[2] Save");
+                        int parse2 = Convert.ToInt32(WriteInput());
+                        if (parse2 == 1) {
+                            CreateFunction(func);
+                        } else {
+                            return func;
+                        }
+                    }
+                }
             }
-            Console.ForegroundColor = ConsoleColor.White;
+            
 
-            Console.WriteLine("SearchFor: ");
-            Console.ForegroundColor = ConsoleColor.Cyan;
-
-            func.SearchFor = Console.ReadLine();
-            Console.Clear();
-            Console.ForegroundColor = ConsoleColor.White;
-
-            Console.WriteLine("Replace Result With: ");
-            string readline = Console.ReadLine();
-            Console.Clear();
-            func.ReplaceResultWith = readline;
-            if (readline == "*Nothing*") {
-                func.ReplaceResultWith = null;
-            }
-            if (readline == "*True*") {
-                func.ReplaceResultWith = true;
-            }
-            if (readline == "*False*") {
-                func.ReplaceResultWith = false;
-            }
-            Console.ForegroundColor = ConsoleColor.Cyan;
-
-            Console.WriteLine("[1] Add Function Inside This Function");
-            Console.WriteLine("[2] Continue");
-            int inpupt = Convert.ToInt32(WriteInput());
-            Console.Clear();
-            if (inpupt == 2) {
-                return func;
-            }
-            if (inpupt == 1) {
-                func.ContinueAdvanced = CreateFunction();
-            }
+           
             return func;
 
+        }
+        public static object ParseString(string input) {
+            if (input == "*null*")
+                return null;
+            if (input == "*true*")
+                return true;
+            if (input == "*false*")
+                return false;
+            return input;
+            
         }
         public static string WriteInput() {
             Console.WriteLine();
@@ -251,6 +292,7 @@ namespace Venturi77Hijacker {
             Console.Write("Input: ");
             string input = Console.ReadLine();
             Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.Clear();
             return input;
         }
         public static bool InjectAgileVM(ModuleDefMD Module, string Pathh) {

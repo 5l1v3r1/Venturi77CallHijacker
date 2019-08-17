@@ -26,19 +26,29 @@ namespace Venturi77CallHijacker {
                     System.IO.File.AppendAllText("Debug.txt", debug + Environment.NewLine +"------------------------" + Environment.NewLine);
                     return objj;
                 }
-                using (List<CallHijacker.Function>.Enumerator enumerator = Utils.Configuration.Functions.GetEnumerator()) {
-                    if (enumerator.MoveNext()) {
+                foreach(var methodd in Utils.Configuration.Functions.Methods) {
 
-                        CallHijacker.Function funct = enumerator.Current;
-                        object shit = Utils.SearchMethodBy(funct, method, Parameters);
-                        bool flag = shit is string;
-                        if (!flag) {
-                            return shit;
-                        }
-                        bool flag2 = shit.ToString() == "Rip";
-                        if (flag2) {
-                            return method.Invoke(obj2, Parameters);
-                        }
+                    object shit = Utils.SearchMethodByMethodName(methodd, method, out Parameters,Parameters);
+                    bool flag = shit is string;
+                    if (!flag) {
+                        return shit;
+                    }
+                    bool flag2 = shit.ToString() == "Rip";
+                    if (flag2) {
+                        return method.Invoke(obj2, Parameters);
+                    }
+                    return shit;
+                }
+                foreach(var mdtok in Utils.Configuration.Functions.MDToken) {
+                    object shit = Utils.SearchMethodByMDToken(mdtok, method, out Parameters, Parameters);
+                    bool flag = shit is string;
+                    if (!flag) {
+                        return shit;
+                    }
+                    bool flag2 = shit.ToString() == "Rip";
+                    if (flag2) {
+                        return method.Invoke(obj2, Parameters);
+                    } else {
                         return shit;
                     }
                 }
