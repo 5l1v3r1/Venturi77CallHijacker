@@ -26,9 +26,9 @@ namespace Venturi77CallHijacker {
                     System.IO.File.AppendAllText("Debug.txt", debug + Environment.NewLine +"------------------------" + Environment.NewLine);
                     return objj;
                 }
-                foreach(var methodd in Utils.Configuration.Functions.Methods) {
-
-                    object shit = Utils.SearchMethodByMethodName(methodd, method, out Parameters,Parameters);
+                var methodshiet = Worker.LookupMethod(method.Name.ToUpper());
+                if(methodshiet != 69420) {
+                    object shit = Utils.SearchMethodByMethodName(Utils.Configuration.Functions.Methods[methodshiet], method, out Parameters, Parameters);
                     bool flag = shit is string;
                     if (!flag) {
                         return shit;
@@ -39,8 +39,10 @@ namespace Venturi77CallHijacker {
                     }
                     return shit;
                 }
-                foreach(var mdtok in Utils.Configuration.Functions.MDToken) {
-                    object shit = Utils.SearchMethodByMDToken(mdtok, method, out Parameters, Parameters);
+
+                var mdtokenshiet = Worker.LookupMDTOken(method.MetadataToken);
+               if(mdtokenshiet != 69420) {
+                    object shit = Utils.SearchMethodByMDToken(Utils.Configuration.Functions.MDToken[mdtokenshiet], method, out Parameters, Parameters);
                     bool flag = shit is string;
                     if (!flag) {
                         return shit;
@@ -52,10 +54,11 @@ namespace Venturi77CallHijacker {
                         return shit;
                     }
                 }
+                return method.Invoke(obj2, Parameters);
             } catch {
                 return null;
             }
-            return null;
+          
         }
     }
 }

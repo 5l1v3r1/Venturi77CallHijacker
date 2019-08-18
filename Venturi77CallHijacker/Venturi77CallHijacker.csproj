@@ -52,6 +52,7 @@
     <Compile Include="CallHijacker.cs" />
     <Compile Include="Handler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Test.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
