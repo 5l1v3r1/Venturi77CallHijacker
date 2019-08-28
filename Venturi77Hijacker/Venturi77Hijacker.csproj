@@ -52,11 +52,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CallHijacker.cs" />
-    <Compile Include="KoiHeader.cs" />
-    <Compile Include="KoiShit.cs" />
+    <Compile Include="ConfigBuilder.cs" />
+    <Compile Include="Injector.cs" />
+    <Compile Include="Header\KoiHeader.cs" />
+    <Compile Include="Header\KoiShit.cs" />
     <Compile Include="Obfuscator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VM%27s\AgileVM.cs" />
+    <Compile Include="VM%27s\EazVM.cs" />
+    <Compile Include="VM%27s\KoiVM.cs" />
+    <Compile Include="VM%27s\KoiVMDll.cs" />
+    <Compile Include="VM%27s\VM.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
